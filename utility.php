@@ -156,7 +156,7 @@ function github_drupalorg_get_form($issue_id) {
   $client = github_drupalorg_get_client();
   $edit_page = $client->request('GET', "https://drupal.org/node/$issue_id/edit");
 
-  return $edit_page->form();
+  return $edit_page->selectButton('Save')->form();
 }
 
 /**
