@@ -135,6 +135,7 @@ function handle_issue_comment($payload) {
  *     - category (not implemented)
  *     - priority (not implemented)
  *     - status
+ *     - tags The tags of the issue as comma-separated values.
  */
 function post_comment($issue_id, $comment, array $files = array(), $issue_settings = array()) {
   static $client;
@@ -205,6 +206,9 @@ function post_comment($issue_id, $comment, array $files = array(), $issue_settin
 
   if (isset($issue_settings['status'])) {
     $form['field_issue_status[und]']->setValue($issue_settings['status']);
+  }
+  if (isset($issue_settings['tags'])) {
+    $form['taxonomy_vocabulary_9[und]']->setValue($issue_settings['tags']);
   }
 
   $client->submit($form);
