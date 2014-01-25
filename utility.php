@@ -4,8 +4,6 @@ use Goutte\Client;
 use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
-require 'vendor/autoload.php';
-
 /**
  * Process a pull request creation or update event.
  *
