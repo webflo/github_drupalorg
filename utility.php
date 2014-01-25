@@ -119,6 +119,47 @@ function handle_issue_comment($payload) {
 }
 
 /**
+ * Returns the client for drupal.org using the singleton pattern.
+ *
+ * @return \Symfony\Component\BrowserKit\Client
+ */
+function github_drupalorg_get_client() {
+  static $client;
+  if (!$client) {
+    // Perform a user login.
+    global $drupal_user, $drupal_password;
+    $client = new Client();
+    $crawler = $client->request('GET', 'https://drupal.org/user');
+    $form = $crawler->selectButton('Log in')->form();
+    // $user and $password must be set in user_password.php.
+    $crawler = $client->submit($form, array('name' => $drupal_user, 'pass' => $drupal_password));
+
+    $login_errors = $crawler->filter('.messages-error');
+    if ($login_errors->count() > 0) {
+      logger("Login to drupal.org failed.");
+      exit;
+    }
+  }
+  return $client;
+}
+
+/**
+ * Returns the current form for a given issue ID.
+ *
+ * @param int $issue_id
+ *   The drupal.org node ID to post the comment to.
+ *
+ * @return \Symfony\Component\DomCrawler\Form
+ *   The form for the given issue ID.
+ */
+function github_drupalorg_get_form($issue_id) {
+  $client = github_drupalorg_get_client();
+  $edit_page = $client->request('GET', "https://drupal.org/node/$issue_id/edit");
+
+  return $edit_page->form();
+}
+
+/**
  * Post a comment to drupal.org.
  *
  * @param int $issue_id
@@ -138,23 +179,7 @@ function handle_issue_comment($payload) {
  *     - tags The tags of the issue as comma-separated values.
  */
 function post_comment($issue_id, $comment, array $files = array(), $issue_settings = array()) {
-  static $client;
-  if (!$client) {
-    // Perform a user login.
-    global $drupal_user, $drupal_password;
-    $client = new Client();
-    $crawler = $client->request('GET', 'https://drupal.org/user');
-    $form = $crawler->selectButton('Log in')->form();
-    // $user and $password must be set in user_password.php.
-    $crawler = $client->submit($form, array('name' => $drupal_user, 'pass' => $drupal_password));
-
-    $login_errors = $crawler->filter('.messages-error');
-    if ($login_errors->count() > 0) {
-      logger("Login to drupal.org failed.");
-      exit;
-    }
-  }
-
+  $client = github_drupalorg_get_client();
   $edit_page = $client->request('GET', "https://drupal.org/node/$issue_id/edit");
   $form = NULL;
 
