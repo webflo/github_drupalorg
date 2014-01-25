@@ -176,6 +176,7 @@ function github_drupalorg_get_form($issue_id) {
  *     - category (not implemented)
  *     - priority (not implemented)
  *     - status
+ *     - tags The tags of the issue as comma-separated values.
  */
 function post_comment($issue_id, $comment, array $files = array(), $issue_settings = array()) {
   $client = github_drupalorg_get_client();
@@ -230,6 +231,9 @@ function post_comment($issue_id, $comment, array $files = array(), $issue_settin
 
   if (isset($issue_settings['status'])) {
     $form['field_issue_status[und]']->setValue($issue_settings['status']);
+  }
+  if (isset($issue_settings['tags'])) {
+    $form['taxonomy_vocabulary_9[und]']->setValue($issue_settings['tags']);
   }
 
   $client->submit($form);
