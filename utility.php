@@ -127,8 +127,16 @@ function handle_issue_comment($payload) {
  *   Text for the comment field.
  * @param array $files
  *   Optional, file names to attach as patch.
+ * @param array $issue_settings
+ *   An array of settings that gets updated, with one of the following keys:
+ *     - version (not implemented)
+ *     - component (not implemented)
+ *     - assigned (not implemented)
+ *     - category (not implemented)
+ *     - priority (not implemented)
+ *     - status
  */
-function post_comment($issue_id, $comment, array $files = array()) {
+function post_comment($issue_id, $comment, array $files = array(), $issue_settings = array()) {
   static $client;
   if (!$client) {
     // Perform a user login.
@@ -182,12 +190,21 @@ function post_comment($issue_id, $comment, array $files = array()) {
   $form['body[und][0][value]']->setValue(html_entity_decode($form->get('body[und][0][value]')->getValue(), ENT_QUOTES, 'UTF-8'));
 
   if ($files) {
-    $status = $form['field_issue_status[und]']->getValue();
 
-    // Set the issue to "needs review" if it is not alreay "needs review" or RTBC.
-    if ($status != 8 && $status != 14) {
-      $form['field_issue_status[und]']->setValue(8);
+    // Update the issue status.
+    if (!isset($issue_settings['status'])) {
+      $status = $form['field_issue_status[und]']->getValue();
+
+      // Set the issue to "needs review" if it is not alreay "needs review" or RTBC.
+      if ($status != 8 && $status != 14) {
+        $issue_settings['status'] = 8;
+      }
     }
+
+  }
+
+  if (isset($issue_settings['status'])) {
+    $form['field_issue_status[und]']->setValue($issue_settings['status']);
   }
 
   $client->submit($form);
