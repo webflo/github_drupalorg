@@ -197,7 +197,7 @@ function post_comment($issue_id, $comment, array $files = array(), $issue_settin
         $file_nr++;
       }
 
-      $form["files[field_issue_files_und_$file_nr]"]->upload($file);
+      $form["files[field_issue_files_und_$file_nr]"]->setFilePath($file);
 
       if ($key != $last_file) {
         $edit_page = $client->submit($form);
