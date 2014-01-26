@@ -6,7 +6,6 @@
     "license": "GPLv2+",
     "require": {
         "fabpot/goutte": "*",
-        "symfony/dom-crawler": "dev-master#157a9de4cd24ab37881f3019a6b3ef68bc36b586"
         "guzzle/plugin-cookie": "*",
         "symfony/event-dispatcher": "*"
     },
