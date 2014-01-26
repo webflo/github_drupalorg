@@ -10,8 +10,11 @@ namespace Drupal\github_drupalorg;
 class IssuePriority extends IssueMetadata {
 
   const CRITICAL = 400;
+
   const MAJOR = 300;
+
   const NORMAL = 200;
+
   const MINOR = 100;
 
   public static function getDefinition() {
@@ -41,7 +44,7 @@ class IssuePriority extends IssueMetadata {
         ),
       ),
       static::MINOR => array(
-        'label' => 'Minro',
+        'label' => 'Minor',
         'aliases' => array(
           'minor',
           'min',
