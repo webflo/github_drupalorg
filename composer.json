@@ -14,7 +14,7 @@
         "fabpot/goutte": "*",
         "guzzle/plugin-cookie": "*",
         "symfony/event-dispatcher": "*",
-        "symfony/dom-crawler": "dev-master#ed6bf2dad3a56a5c83ef827e580250d42ac740af"
+        "symfony/dom-crawler": "dev-master#4c61df9de058108c4a007975f4962a87a1f9b574"
     },
     "autoload": {
         "psr-4": {
