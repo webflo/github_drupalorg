@@ -1,6 +1,6 @@
 <?php
 
-use Goutte\Client;
+use Drupal\github_drupalorg\Client;
 use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 
@@ -119,42 +119,22 @@ function handle_issue_comment($payload) {
 /**
  * Returns the client for drupal.org using the singleton pattern.
  *
- * @return \Symfony\Component\BrowserKit\Client
+ * @return Drupal\github_drupalorg\Client
  */
 function github_drupalorg_get_client() {
   static $client;
   if (!$client) {
     // Perform a user login.
     global $drupal_user, $drupal_password;
-    $client = new Client();
-    $crawler = $client->request('GET', 'https://drupal.org/user');
-    $form = $crawler->selectButton('Log in')->form();
-    // $user and $password must be set in user_password.php.
-    $crawler = $client->submit($form, array('name' => $drupal_user, 'pass' => $drupal_password));
-
-    $login_errors = $crawler->filter('.messages-error');
-    if ($login_errors->count() > 0) {
+    $client = new Client($drupal_user);
+    try {
+      $client->login($drupal_password);
+    } catch (Exception $e) {
       logger("Login to drupal.org failed.");
       exit;
     }
   }
   return $client;
-}
-
-/**
- * Returns the current form for a given issue ID.
- *
- * @param int $issue_id
- *   The drupal.org node ID to post the comment to.
- *
- * @return \Symfony\Component\DomCrawler\Form
- *   The form for the given issue ID.
- */
-function github_drupalorg_get_form($issue_id) {
-  $client = github_drupalorg_get_client();
-  $edit_page = $client->request('GET', "https://drupal.org/node/$issue_id/edit");
-
-  return $edit_page->selectButton('Save')->form();
 }
 
 /**
@@ -178,63 +158,7 @@ function github_drupalorg_get_form($issue_id) {
  */
 function post_comment($issue_id, $comment, array $files = array(), $issue_settings = array()) {
   $client = github_drupalorg_get_client();
-  $edit_page = $client->request('GET', "https://drupal.org/node/$issue_id/edit");
-  $form = NULL;
-
-  if ($files) {
-    $last_file = end(array_keys($files));
-
-    foreach ($files as $key => $file) {
-      $button = ($last_file == $key) ? 'Save' : 'Upload';
-      $form = $edit_page->selectButton($button)->form();
-
-      // There can be uploaded files already, so we need to iterate to the most
-      // recent file number.
-      $file_nr = 0;
-      while (!isset($form["files[field_issue_files_und_$file_nr]"])) {
-        $file_nr++;
-      }
-
-      $form["files[field_issue_files_und_$file_nr]"]->setFilePath($file);
-
-      if ($key != $last_file) {
-        $edit_page = $client->submit($form);
-      }
-    }
-  }
-
-  if (!isset($form)) {
-    $form = $edit_page->selectButton('Save')->form();
-  }
-
-  $form['nodechanges_comment_body[value]']->setValue($comment);
-  // We need to HTML entity decode the issue summary here, otherwise we
-  // would post back a double-encoded version, which would result in issue
-  // summary changes that we don't want to touch.
-  $form['body[und][0][value]']->setValue(html_entity_decode($form->get('body[und][0][value]')->getValue(), ENT_QUOTES, 'UTF-8'));
-
-  if ($files) {
-
-    // Update the issue status.
-    if (!isset($issue_settings['status'])) {
-      $status = $form['field_issue_status[und]']->getValue();
-
-      // Set the issue to "needs review" if it is not alreay "needs review" or RTBC.
-      if ($status != 8 && $status != 14) {
-        $issue_settings['status'] = 8;
-      }
-    }
-
-  }
-
-  if (isset($issue_settings['status'])) {
-    $form['field_issue_status[und]']->setValue($issue_settings['status']);
-  }
-  if (isset($issue_settings['tags'])) {
-    $form['taxonomy_vocabulary_9[und]']->setValue($issue_settings['tags']);
-  }
-
-  $client->submit($form);
+  $client->postComment($issue_id, $comment, $files, $issue_settings);
 }
 
 /**

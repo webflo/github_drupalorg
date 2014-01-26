@@ -5,7 +5,9 @@
     "keywords": ["scraper"],
     "license": "GPLv2+",
     "require": {
-        "fabpot/goutte": "*"
+        "fabpot/goutte": "*",
+        "guzzle/plugin-cookie": "*",
+        "symfony/event-dispatcher": "*"
     },
     "autoload": {
         "psr-4": {
