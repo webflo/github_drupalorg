@@ -96,10 +96,6 @@ class Client {
     }
 
     $form['nodechanges_comment_body[value]']->setValue($comment);
-    // We need to HTML entity decode the issue summary here, otherwise we
-    // would post back a double-encoded version, which would result in issue
-    // summary changes that we don't want to touch.
-    $form['body[und][0][value]']->setValue(html_entity_decode($form->get('body[und][0][value]')->getValue(), ENT_QUOTES, 'UTF-8'));
 
     if ($files) {
       // Update the issue status.
