@@ -10,7 +10,7 @@ namespace Drupal\github_drupalorg;
 /**
  * Defines drupal.org issue statuses.
  */
-class IssueStatus {
+class IssueStatus extends IssueMetadata {
 
   /*
   1  Active
@@ -54,6 +54,98 @@ class IssueStatus {
 
   const CLOSED_FIXED = 7;
 
+
+  public static function getDefinition() {
+    return array(
+      IssueStatus::ACTIVE => array(
+        'label' => 'Active',
+        'aliases' => array(
+          'active',
+          'a',
+        ),
+      ),
+      IssueStatus::NEEDS_WORK => array(
+        'label' => 'Needs work',
+        'aliases' => array(
+          'needs work',
+          'nw',
+          'work',
+        ),
+      ),
+      IssueStatus::NEEDS_REVIEW => array(
+        'label' => 'Needs review',
+        'aliases' => array(
+          'needs review',
+          'nr',
+          'review',
+        ),
+      ),
+      IssueStatus::RTBC => array(
+        'label' => 'Reviewed & tested by the community',
+        'aliases' => array(
+          'rtbc',
+          '+1',
+        ),
+      ),
+      IssueStatus::PATCH_TO_BE_PORTED => array(
+        'label' => 'Patch (to be ported)',
+        'aliases' => array(
+          'pp',
+        ),
+      ),
+      IssueStatus::FIXED => array(
+        'label' => 'Fixed',
+        'aliases' => array(
+          'fixed',
+          'f',
+        ),
+      ),
+      IssueStatus::POSTPONED => array(
+        'label' => 'Postponed',
+        'aliases' => array(
+          'p',
+        ),
+      ),
+      IssueStatus::POSTPONED_MAINTAINER_INFO => array(
+        'label' => 'Postponed (maintainer needs more info)',
+        'aliases' => array(
+          'pmi',
+        ),
+      ),
+      IssueStatus::CLOSED_DUPLICATE => array(
+        'label' => 'Closed (duplicate)',
+        'aliases' => array(
+          'cd',
+          'dup',
+        ),
+      ),
+      IssueStatus::CLOSED_WONT_FIX => array(
+        'label' => "Closed (won't fix)",
+        'aliases' => array(
+          'cwf',
+        ),
+      ),
+      IssueStatus::CLOSED_WORKS_AS_DESIGNED => array(
+        'label' => 'Closed (works as designed)',
+        'aliases' => array(
+          'cwad',
+        ),
+      ),
+      IssueStatus::CLOSED_CANNOT_REPRODUCE => array(
+        'label' => 'Closed (cannot reproduce)',
+        'aliases' => array(
+          'cnr',
+        ),
+      ),
+      IssueStatus::CLOSED_FIXED => array(
+        'label' => 'Closed (fixed)',
+        'aliases' => array(
+          'cf',
+        ),
+      ),
+    );
+  }
+
   /**
    * Get all "Open Issues" statuses.
    *
@@ -72,114 +164,4 @@ class IssueStatus {
     );
   }
 
-  public static function getDefinition() {
-    return array(
-      self::ACTIVE => array(
-        'label' => 'Active',
-        'aliases' => array(
-          'active',
-          'a',
-        ),
-      ),
-      self::NEEDS_WORK => array(
-        'label' => 'Needs work',
-        'aliases' => array(
-          'needs work',
-          'nw',
-          'work',
-        ),
-      ),
-      self::NEEDS_REVIEW => array(
-        'label' => 'Needs review',
-        'aliases' => array(
-          'needs review',
-          'nr',
-          'review',
-        ),
-      ),
-      self::RTBC => array(
-        'label' => 'Reviewed & tested by the community',
-        'aliases' => array(
-          'rtbc',
-          '+1',
-        ),
-      ),
-      self::PATCH_TO_BE_PORTED => array(
-        'label' => 'Patch (to be ported)',
-        'aliases' => array(
-          'pp',
-        ),
-      ),
-      self::FIXED => array(
-        'label' => 'Fixed',
-        'aliases' => array(
-          'fixed',
-          'f',
-        ),
-      ),
-      self::POSTPONED => array(
-        'label' => 'Postponed',
-        'aliases' => array(
-          'p',
-        ),
-      ),
-      self::POSTPONED_MAINTAINER_INFO => array(
-        'label' => 'Postponed (maintainer needs more info)',
-        'aliases' => array(
-          'pmi',
-        ),
-      ),
-      self::CLOSED_DUPLICATE => array(
-        'label' => 'Closed (duplicate)',
-        'aliases' => array(
-          'cd',
-          'dup',
-        ),
-      ),
-      self::CLOSED_WONT_FIX => array(
-        'label' => "Closed (won't fix)",
-        'aliases' => array(
-          'cwf',
-        ),
-      ),
-      self::CLOSED_WORKS_AS_DESIGNED => array(
-        'label' => 'Closed (works as designed)',
-        'aliases' => array(
-          'cwad',
-        ),
-      ),
-      self::CLOSED_CANNOT_REPRODUCE => array(
-        'label' => 'Closed (cannot reproduce)',
-        'aliases' => array(
-          'cnr',
-        ),
-      ),
-      self::CLOSED_FIXED => array(
-        'label' => 'Closed (fixed)',
-        'aliases' => array(
-          'cf',
-        ),
-      ),
-    );
-  }
-
-  public static function aliasMapReverse() {
-    $map = self::getDefinition();
-    $aliases = array();
-    foreach ($map as $status => $definition) {
-      $aliases[$definition['label']] = $status;
-      $aliases = array_merge($aliases, array_fill_keys($definition['aliases'], $status));
-    }
-    return $aliases;
-  }
-
-  public static function toInteger($string) {
-    $string = trim($string);
-    if (is_numeric($string)) {
-      return $string;
-    }
-    $map = self::aliasMapReverse();
-    return isset($map[$string]) ? $map[$string] : FALSE;
-  }
-
-} 
+}

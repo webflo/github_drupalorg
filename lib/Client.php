@@ -117,6 +117,10 @@ class Client {
       $form['taxonomy_vocabulary_9[und]']->setValue($issue_settings['tags']);
     }
 
+    if (isset($issue_settings['priority'])) {
+      $form['field_issue_priority[und]']->setValue($issue_settings['priority']);
+    }
+
     $this->client->submit($form);
   }
 
