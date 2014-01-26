@@ -13,7 +13,7 @@
     "require": {
         "fabpot/goutte": "*",
         "guzzle/plugin-cookie": "*",
-        "symfony/event-dispatcher": "*"
+        "symfony/event-dispatcher": "*",
         "symfony/dom-crawler": "dev-master#ed6bf2dad3a56a5c83ef827e580250d42ac740af"
     },
     "autoload": {
