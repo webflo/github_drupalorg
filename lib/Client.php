@@ -17,7 +17,7 @@ class Client {
   private $username;
 
   /**
-   * @var \Goutte\Client();
+   * @var \Goutte\Client;
    */
   private $client;
 
@@ -49,7 +49,7 @@ class Client {
   public function login($password) {
     $crawler = $this->client->request('GET', 'https://drupal.org/user');
     $form = $crawler->selectButton('Log in')->form();
-    $crawler = $$this->client->submit($form, array(
+    $crawler = $this->client->submit($form, array(
       'name' => $this->username,
       'pass' => $password
     ));
