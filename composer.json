@@ -4,17 +4,10 @@
     "description": "Synchronization of github pull requests to drupal.org",
     "keywords": ["scraper"],
     "license": "GPLv2+",
-    "repositories": [
-        {
-          "type": "vcs",
-          "url": "https://github.com/dawehner/DomCrawler.git"
-        }
-    ],
     "require": {
         "fabpot/goutte": "*",
         "guzzle/plugin-cookie": "*",
-        "symfony/event-dispatcher": "*",
-        "symfony/dom-crawler": "dev-master#4c61df9de058108c4a007975f4962a87a1f9b574"
+        "symfony/event-dispatcher": "*"
     },
     "autoload": {
         "psr-4": {
