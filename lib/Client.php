@@ -129,9 +129,15 @@ class Client {
    *
    * @param $nid
    * @return \Symfony\Component\DomCrawler\Form
+   *
+   * @throws \Exception
+   *   Thrown when the result was a 403.
    */
   public function getForm($nid) {
     $edit_page = $this->client->request('GET', "https://drupal.org/node/$nid/edit");
+    if ($this->client->getInternalRequest()->getStatus() == 403) {
+      throw new \Exception('Access denied', 403);
+    }
     return $edit_page->selectButton('Save')->form();
   }
 
