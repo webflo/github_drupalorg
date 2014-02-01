@@ -135,8 +135,8 @@ class Client {
    */
   public function getForm($nid) {
     $edit_page = $this->client->request('GET', "https://drupal.org/node/$nid/edit");
-    if ($this->client->getInternalRequest()->getStatus() == 403) {
-      throw new \Exception('Access denied', 403);
+    if ($this->client->getInternalResponse()->getStatus() == 403) {
+      throw new \Exception('Access denied.', 403);
     }
     return $edit_page->selectButton('Save')->form();
   }
